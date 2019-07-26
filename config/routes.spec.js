@@ -12,22 +12,34 @@ describe('Server Test', () => {
     beforeAll(async () => {
         await db('users').truncate();
     })
+
+    const user = {"username": "kevin", "password": "test"}
+    const user2 = {"username": "kev", "password": "test"}
+
     describe('Register test', () => {
         it('Should return 201 status', () => {
             return request(server).post('/api/register')
-            .send({"username": "kevin", "password": "test"})
+            .send(user)
             .then(res => {
                 expect(res.status).toBe(201)
             })
         })
 
-        describe('Login Test', () => {
-            it('Should Return 200', () => {
-                return request(server).post('/api/login')
-                .send({"username": "kevin", "password": "test"})
-                .then(res => {
-                    expect(res.status).toBe(200)
-                })
+        it('Should return user Object', () => {
+            return request(server).post('/api/register')
+            .send(user2)
+            .then(res => {
+                expect(res.body).toEqual({id: 2, username: user2.username})
+            })
+        })
+    })
+
+    describe('Login Test', () => {
+        it('Should Return 200', () => {
+            return request(server).post('/api/login')
+            .send(user)
+            .then(res => {
+                expect(res.status).toBe(200)
             })
         })
     })
